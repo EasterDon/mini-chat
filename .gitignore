@@ -1,0 +1,9 @@
+**/pnpm-debug.log*
+
+**/node_modules
+**/dist
+
+**/.vscode/*
+**/*.code-workspace
+
+**/.env.production
