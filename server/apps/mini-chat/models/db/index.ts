@@ -4,7 +4,7 @@ let password = process.env.database_pass;
 
 const config = {
   host: "localhost",
-  user: "root",
+  user: "mini-chat",
   password,
   database: "mini-chat",
 };

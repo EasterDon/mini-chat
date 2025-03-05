@@ -5,9 +5,10 @@ import cors from "cors";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
-import login_router from "./src/routes/auth.js";
+import { use_routes } from "./dispatch.js";
+import { error_handler } from "@/apps/mini-chat/middleware/error_handler/index.js";
 
-import { error_handler } from "@/middleware/error_handler/index.js";
+import listEndpoints from "express-list-endpoints";
 
 const app: Application = express();
 
@@ -25,11 +26,7 @@ app.use(cors());
 
 app.use(express.static(path.join(current_dirname, "public")));
 
-// app.get("/", (_req, res) => {
-//   res.sendFile(path.join(current_dirname, "public"));
-// });
-
-app.use("/auth", login_router);
+use_routes(app);
 
 app.use((_req, _res, next) => {
   const err = new Error("Not Found");
@@ -37,6 +34,9 @@ app.use((_req, _res, next) => {
   err.status = 404;
   next(err);
 });
+
+console.log("当前项目所有路由：\n");
+console.table(listEndpoints(app));
 
 app.use(error_handler);
 
