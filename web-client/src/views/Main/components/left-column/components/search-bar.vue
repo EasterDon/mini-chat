@@ -7,6 +7,10 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons-vue';
 
+import { search_value } from '@/views/Main/components/left-column/request/search_value';
+import axios from 'axios';
+import type { RequestFn } from '@/types';
+
 const is_searching = ref(false);
 const is_focusing = ref(false);
 const input_value = ref('');
@@ -20,14 +24,31 @@ const out_input_focus = () => {
   is_focusing.value = false;
 };
 
-const search_value = async () => {
-  if (input_value.value.trim() === '') {
-    is_searching.value = false;
-    return;
-  }
+// @future 要改为指定类型
+// requestFn: RequestFn<{ results: string[] }>
+const requestFn: RequestFn<string[]> = async (signal) => {
+  await new Promise((res) => setTimeout(() => res(1), 200));
+  const response = await axios.get(`www.baidu.com`, {
+    signal, // 绑定取消信号
+  });
+  return response.data;
+};
+
+const on_start = () => {
   is_searching.value = true;
-  await new Promise((r) => setTimeout(() => r(1), 2000));
+};
+
+const on_stop = () => {
   is_searching.value = false;
+};
+
+const search = async () => {
+  await search_value('1', 300, requestFn, {
+    onSearchStart: on_start,
+    onSearchSuccess: on_stop,
+    onSearchError: on_stop,
+    onSearchCancel: on_stop,
+  });
 };
 </script>
 
@@ -43,7 +64,7 @@ const search_value = async () => {
       :bordered="false"
       @focus="has_focus"
       @blur="out_input_focus"
-      @input="search_value"
+      @input="search"
     >
       <template #prefix>
         <SearchOutlined class="icon-search" v-if="!is_searching" />

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { type RouteRecordRaw } from 'vue-router';
 
-import Login from '@/views/Login/index-page.vue';
+import Login from '@/views/Login/login-page.vue';
 import Main from '@/views/Main/index-page.vue';
 
 const routes: RouteRecordRaw[] = [

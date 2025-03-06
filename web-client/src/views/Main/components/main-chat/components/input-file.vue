@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { LinkOutlined } from '@ant-design/icons-vue';
-import { upload_file } from '@/api';
+import { upload_file } from '../request';
 
 // 文件上传
 const input_file = ref<HTMLInputElement | null>(null);
@@ -19,7 +19,7 @@ const upload_input_file = async () => {
   console.log(file);
 
   const upload_res = await upload_file(file);
-  if (!upload_res) {
+  if (!upload_res.isOk) {
     message.error('文件上传失败');
     return;
   }

@@ -3,7 +3,7 @@ import { error_handler } from './error_handler';
 
 export const login_request = async (username: string, password: string) => {
   try {
-    const res = await axios.post('http://127.0.0.1:3001/auth/sign-in', {
+    const res = await axios.post('http://127.0.0.1:3001/mini-chat/auth/sign-in', {
       username: username,
       password: password,
     });

@@ -14,7 +14,8 @@ export const error_handler = (error: unknown) => {
 const axios_error_handler = (error: AxiosError) => {
   if (error.code?.includes('ERR_NETWORK')) {
     message.error('网络错误');
-  } else {
-    message.error('未知错误');
+  } else if (error.code?.includes('ERR_BAD_REQUEST')) {
+    // @ts-expect-error a a
+    message.error(error.response?.data.message);
   }
 };
