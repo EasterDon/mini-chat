@@ -4,6 +4,8 @@ import morgan from "morgan";
 import cors from "cors";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 import { use_routes } from "./dispatch.js";
 import { error_handler } from "@/apps/mini-chat/middleware/error_handler/index.js";
@@ -11,6 +13,16 @@ import { error_handler } from "@/apps/mini-chat/middleware/error_handler/index.j
 import listEndpoints from "express-list-endpoints";
 
 const app: Application = express();
+
+// http服务器
+const server = createServer(app);
+// ws服务器
+const io = new Server(server, {
+  cors: {
+    origin: "*", // 允许所有域名访问
+    methods: ["GET", "POST"],
+  },
+});
 
 /*
   import.meta.url：提供当前模块文件的 URL
@@ -40,21 +52,22 @@ console.table(listEndpoints(app));
 
 app.use(error_handler);
 
-import { createServer } from "http";
-import { Server } from "socket.io";
-const ws_server = createServer(app);
-const io = new Server(ws_server, {});
-
 io.on("connection", (socket) => {
-  console.log(`用户${socket.id}连接`);
-  console.log(`此次连接信息为：${socket.rooms}`);
-  socket.on("chat message", (msg) => {
+  socket.on("hello", (msg) => {
     console.log(`用户${socket.id}发送信息：${msg}`);
   });
   socket.on("disconnect", () => {
     console.log(`用户${socket.id}断开`);
   });
-});
-ws_server.listen(3001);
 
-export default app;
+  socket.on("chat-message", (msg, akt) => {
+    let status = true;
+    if (status) akt({ status, timestamp: Date.now() });
+    else akt({ status });
+  });
+  socket.on("upload-file", () => {
+    console.log("文件上传");
+  });
+});
+
+export { app, server };

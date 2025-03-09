@@ -8,6 +8,7 @@ import ChatMessage from './components/chat-message.vue';
 import InputFile from './components/input-file.vue';
 
 import type { MessageValue } from '@/types';
+import { chat } from '@/views/Main/ws';
 
 const chat_content: Ref<HTMLDivElement | null> = ref(null);
 
@@ -54,6 +55,14 @@ const to_bottom = async () => {
 onMounted(async () => {
   await to_bottom();
 });
+
+// 聊天信息
+const message_value = ref('');
+const send_message = async () => {
+  const res = await chat(message_value.value);
+  console.log(res.status);
+  console.log(res.timestamp);
+};
 </script>
 
 <template>
@@ -69,7 +78,13 @@ onMounted(async () => {
     </div>
     <div class="message-input">
       <InputFile />
-      <Input class="input" />
+      <form @submit.prevent>
+        <Input
+          class="input"
+          v-model:value="message_value"
+          @press-enter="send_message"
+        />
+      </form>
       <SmileOutlined class="icon" />
       <AudioOutlined @click="add" class="icon" />
     </div>

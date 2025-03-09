@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 让系统动态的去查找node 来执行脚本文件
-import app from "../app.js";
+import { server, app } from "../app.js";
 import debugPkg from "debug";
 import http from "http";
 
@@ -31,11 +31,6 @@ const normalizePort = (val: any) => {
  */
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
-
-/**
- * 创建 HTTP 服务器
- */
-const server = http.createServer(app);
 
 /**
  * HTTP 服务器 "监听 "事件的事件监听器。

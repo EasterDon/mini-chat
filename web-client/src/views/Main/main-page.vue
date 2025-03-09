@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { socket, chat } from './ws';
 import { MainChat, LeftColumn } from './components';
 
-// import { WS } from '@/api';
-// const socket = new WS('test');
+import { useUserStore } from '@/stores/user';
+
+socket.on('connect', async () => {
+  chat('😄');
+});
 </script>
 
 <template>
