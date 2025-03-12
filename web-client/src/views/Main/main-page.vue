@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { socket, chat } from './ws';
+import { socket } from './ws';
 import { MainChat, LeftColumn } from './components';
 
 import { useUserStore } from '@/stores/user';
 
+const user_store = useUserStore();
+
 socket.on('connect', async () => {
-  chat('😄');
+  // chat('😄');
+  socket.emit('join-room', { id: user_store.profile.id }, (akt) => {
+    console.log(akt);
+  });
 });
 </script>
 

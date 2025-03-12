@@ -1,10 +1,11 @@
+import type { SendMessage } from '@/types';
 import { io, Socket } from 'socket.io-client';
 
 export const socket: Socket = io('http://localhost:3000');
 
 // 封装 emit 为 Promise
 export const chat = (
-  message: string,
+  message: SendMessage,
 ): Promise<{ status: boolean; timestamp?: number }> => {
   return new Promise((resolve, reject) => {
     socket.emit(
@@ -20,3 +21,4 @@ export const chat = (
     );
   });
 };
+

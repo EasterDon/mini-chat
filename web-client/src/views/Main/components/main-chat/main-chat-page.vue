@@ -7,25 +7,29 @@ import { SmileOutlined, AudioOutlined } from '@ant-design/icons-vue';
 import ChatMessage from './components/chat-message.vue';
 import InputFile from './components/input-file.vue';
 
-import type { MessageValue } from '@/types';
-import { chat } from '@/views/Main/ws';
+import { useUserStore } from '@/stores/user';
+
+const user_store = useUserStore();
+
+import type { SendMessage, Message } from '@/types';
+import { chat, socket } from '@/views/Main/ws';
+
+socket.on('get-message', (msg) => {
+  // console.log(msg);
+  values.value.push(msg);
+});
 
 const chat_content: Ref<HTMLDivElement | null> = ref(null);
 
-const values = ref<MessageValue[]>([
-  { type: 'text', sender: 1, content: 'hello', date: '今天' },
-  { type: 'text', sender: 1, content: 'hello', date: '今天' },
-  { type: 'text', sender: 1, content: 'hello', date: '今天' },
-  { type: 'text', sender: 1, content: 'no hello', date: '今天' },
+const values = ref<Message[]>([
+  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
+  { sender: 2, receiver: 1, type: 'text', content: 'hello', date: 1 },
+  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
+  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
 ]);
 
-const add = async () => {
-  values.value.push({
-    type: 'text',
-    sender: 1,
-    content: 'hello',
-    date: '今天',
-  });
+const add = async (new_message: Message) => {
+  values.value.push(new_message);
 
   await to_bottom();
 };
@@ -59,9 +63,19 @@ onMounted(async () => {
 // 聊天信息
 const message_value = ref('');
 const send_message = async () => {
-  const res = await chat(message_value.value);
-  console.log(res.status);
-  console.log(res.timestamp);
+  if (!message_value.value) return;
+  const message: SendMessage = {
+    sender: user_store.profile.id!,
+    receiver: 2,
+    type: 'text',
+    content: message_value.value,
+  };
+  const res = await chat(message);
+  message_value.value = '';
+  if (!res.status) return;
+  if (!res.timestamp) return;
+  const new_message: Message = { ...message, date: res.timestamp };
+  await add(new_message);
 };
 </script>
 
@@ -86,7 +100,7 @@ const send_message = async () => {
         />
       </form>
       <SmileOutlined class="icon" />
-      <AudioOutlined @click="add" class="icon" />
+      <AudioOutlined @click="send_message" class="icon" />
     </div>
   </div>
 </template>
@@ -109,6 +123,9 @@ const send_message = async () => {
     overflow-y: scroll;
     scrollbar-width: thin;
     scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .message-input {

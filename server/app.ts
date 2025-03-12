@@ -51,23 +51,34 @@ console.log("当前项目所有路由：\n");
 console.table(listEndpoints(app));
 
 app.use(error_handler);
-
+import { pool } from "@/apps/mini-chat/models/db/index.js";
 io.on("connection", (socket) => {
-  socket.on("hello", (msg) => {
-    console.log(`用户${socket.id}发送信息：${msg}`);
-  });
   socket.on("disconnect", () => {
     console.log(`用户${socket.id}断开`);
   });
 
+  socket.on("join-room", async (msg, akt) => {
+    console.log('数据：',msg.id);
+    
+    const [rooms] = await pool.query(
+      "select * from friendship where user_id_1=? or user_id_2=?",
+      [msg.id, msg.id]
+    );
+    (rooms as Array<{ id: number }>).forEach((item) => {
+      socket.join(`friend-${item.id}`);
+    });
+    akt({ rooms });
+  });
+
   socket.on("chat-message", (msg, akt) => {
     let status = true;
-    if (status) akt({ status, timestamp: Date.now() });
+    let timestamp = Date.now();
+    socket.to("room1").emit("get-message", { ...msg, timestamp });
+    if (status) akt({ status, timestamp });
     else akt({ status });
   });
   socket.on("upload-file", () => {
     console.log("文件上传");
   });
 });
-
 export { app, server };
