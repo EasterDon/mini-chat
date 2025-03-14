@@ -4,10 +4,13 @@ export type Meme = {
   url: string;
 };
 
+export type Message = SendMessage & MessageTime;
+
 export type SendMessage = {
+  room:number;
   sender: number;
   receiver: number;
-  type: 'text' | 'audio' | 'video' | 'file' | 'image';
+  type: MessageType;
   content: string;
 };
 
@@ -15,4 +18,4 @@ type MessageTime = {
   date: number;
 };
 
-export type Message = SendMessage & MessageTime;
+export type MessageType = 'text' | 'audio' | 'video' | 'file' | 'image';

@@ -2,12 +2,15 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { UserProfile } from '@/types';
 import { message } from 'ant-design-vue';
+import { socket } from '@/views/Main/ws';
 
-export const useFrinedStore = defineStore('friend', () => {
+export const useFriendStore = defineStore('friend', () => {
   const friend_list = ref<UserProfile[]>([]);
 
-  async function init_friend_list(friend_list_value: UserProfile[]) {
-    friend_list.value = friend_list_value;
+  function init_friend_list(id: number) {
+    socket.emit('get-friends-profile', { id }, (akt: UserProfile[]) => {
+      friend_list.value = akt;
+    });
   }
 
   async function update_friend_list(

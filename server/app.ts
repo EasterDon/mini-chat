@@ -57,9 +57,7 @@ io.on("connection", (socket) => {
     console.log(`用户${socket.id}断开`);
   });
 
-  socket.on("join-room", async (msg, akt) => {
-    console.log('数据：',msg.id);
-    
+  socket.on("join-room", async (msg: { id: number }, akt) => {
     const [rooms] = await pool.query(
       "select * from friendship where user_id_1=? or user_id_2=?",
       [msg.id, msg.id]
@@ -67,16 +65,39 @@ io.on("connection", (socket) => {
     (rooms as Array<{ id: number }>).forEach((item) => {
       socket.join(`friend-${item.id}`);
     });
-    akt({ rooms });
+    akt(rooms);
   });
 
   socket.on("chat-message", (msg, akt) => {
     let status = true;
     let timestamp = Date.now();
-    socket.to("room1").emit("get-message", { ...msg, timestamp });
+    socket.to(`friend-${msg.room}`).emit("get-message", { ...msg, timestamp });
     if (status) akt({ status, timestamp });
     else akt({ status });
   });
+
+  socket.on("get-friends-profile", async (msg: { id: number }, akt) => {
+    // 查询所有好友信息
+    const [friends_value] = await pool.query(
+      `
+        SELECT u.id,u.avatar,u.username,u.nickname,u.online
+        FROM user u
+        JOIN (
+          SELECT 
+            CASE 
+              WHEN user_id_1 = ? THEN user_id_2 
+              WHEN user_id_2 = ? THEN user_id_1 
+            END AS friend_id
+          FROM friendship
+          WHERE user_id_1 = ? OR user_id_2 = ?
+        ) AS friends
+        ON u.id = friends.friend_id;
+        `,
+      [msg.id, msg.id, msg.id, msg.id]
+    );
+    akt(friends_value);
+  });
+
   socket.on("upload-file", () => {
     console.log("文件上传");
   });

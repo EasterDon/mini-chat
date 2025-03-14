@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { Avatar } from 'ant-design-vue';
-const avatar_name = 'avatar.png';
-const last_message_value = {
-  sender: 'Easter',
-  content: 'Hello World!',
-};
-const avatar_src = new URL('/avatar/' + avatar_name, import.meta.url).href;
-console.log(avatar_src);
+// const avatar_name = 'avatar.png';
+// const last_message_value = {
+//   sender: 'Easter',
+//   content: 'Hello World!',
+// };
+// const avatar_src = new URL('/avatar/' + avatar_name, import.meta.url).href;
+// console.log(avatar_src);
+
+const props = defineProps(['value']);
 </script>
 
 <template>
   <div class="chat-list-item">
-    <Avatar class="item-avatar" :size="50" :src="avatar_src" />
+    <Avatar class="item-avatar" :size="50" :src="props.value.avatar" />
     <div class="item-content">
       <div class="item-title">
-        <div class="item-name">群名</div>
+        <div class="item-name">{{ props.value.nickname }}</div>
         <!-- 
           @future
           改为当天消息显示时间
@@ -24,9 +26,7 @@ console.log(avatar_src);
         <div class="item-last-message-time">00:00</div>
       </div>
 
-      <div class="item-last-message">
-        {{ last_message_value.sender }}:{{ last_message_value.content }}
-      </div>
+      <div class="item-last-message">{{ '测试' }}:{{ '测试' }}</div>
     </div>
   </div>
 </template>

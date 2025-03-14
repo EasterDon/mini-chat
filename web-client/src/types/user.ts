@@ -5,11 +5,12 @@ export enum Gender {
 }
 
 export type UserProfile = {
-  id: null | number;
-  avatar: null | string;
-  username: null | string;
-  nickname: null | string;
-  level: null | number;
+  id: number;
+  avatar: string;
+  username: string;
+  nickname: string;
+  level: number;
+  online: boolean;
 };
 
 export type ChangeProfile = {

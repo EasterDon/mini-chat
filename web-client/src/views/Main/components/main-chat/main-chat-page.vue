@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, type Ref } from 'vue';
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  ref,
+  unref,
+  type Ref,
+} from 'vue';
 
 import { Input } from 'ant-design-vue';
 import { SmileOutlined, AudioOutlined } from '@ant-design/icons-vue';
@@ -8,32 +16,32 @@ import ChatMessage from './components/chat-message.vue';
 import InputFile from './components/input-file.vue';
 
 import { useUserStore } from '@/stores/user';
+import { useRoomStore } from '@/stores/room';
 
 const user_store = useUserStore();
+const room_store = useRoomStore();
 
 import type { SendMessage, Message } from '@/types';
-import { chat, socket } from '@/views/Main/ws';
-
-socket.on('get-message', (msg) => {
-  // console.log(msg);
-  values.value.push(msg);
-});
+import { chat } from '@/views/Main/ws';
 
 const chat_content: Ref<HTMLDivElement | null> = ref(null);
 
-const values = ref<Message[]>([
-  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
-  { sender: 2, receiver: 1, type: 'text', content: 'hello', date: 1 },
-  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
-  { sender: 1, receiver: 2, type: 'text', content: 'hello', date: 1 },
-]);
-
-const add = async (new_message: Message) => {
-  values.value.push(new_message);
-
-  await to_bottom();
-};
-
+// 获取聊天信息
+import { useMessageStore } from '@/stores/message';
+const message_store = useMessageStore();
+const current_chat_id = inject('current_chat_id', ref(0));
+const message_index = computed(() =>
+  message_store.friend_message.findIndex(
+    (item) =>
+      item.message[0].sender === current_chat_id.value ||
+      item.message[0].receiver === current_chat_id.value,
+  ),
+);
+const values = computed(() =>
+  message_index.value === -1
+    ? []
+    : message_store.friend_message[message_index.value].message,
+);
 /**
  * 检查聊天容器是否位于最底部或最顶部，并在满足条件时滚动到最底部。
  *
@@ -62,11 +70,19 @@ onMounted(async () => {
 
 // 聊天信息
 const message_value = ref('');
+const current_room = computed(
+  () =>
+    room_store.rooms.find(
+      (item) => item.user_id_1 || item.user_id_2 === current_chat_id.value,
+    ).id,
+);
 const send_message = async () => {
+  if (!unref(current_chat_id)) return;
   if (!message_value.value) return;
   const message: SendMessage = {
+    room: current_room.value,
     sender: user_store.profile.id!,
-    receiver: 2,
+    receiver: unref(current_chat_id),
     type: 'text',
     content: message_value.value,
   };
@@ -75,18 +91,19 @@ const send_message = async () => {
   if (!res.status) return;
   if (!res.timestamp) return;
   const new_message: Message = { ...message, date: res.timestamp };
-  await add(new_message);
+  message_store.set_friend_message(new_message);
 };
 </script>
 
 <template>
-  <div class="chat-wrapper">
+  <div class="unshow" v-show="!current_chat_id"></div>
+  <div class="chat-wrapper" v-show="current_chat_id">
     <div class="chat-header">
       <div>name</div>
       <div>search value-bar option</div>
     </div>
     <div ref="chat_content" class="chat-content">
-      <template v-for="message in values" :key="message">
+      <template v-for="(message, index) in values" :key="index">
         <ChatMessage :message />
       </template>
     </div>
@@ -106,7 +123,15 @@ const send_message = async () => {
 </template>
 
 <style scoped lang="less">
+.unshow {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
 .chat-wrapper {
+  width: 100%;
+  height: 100%;
   background-color: beige;
 
   .chat-header {
