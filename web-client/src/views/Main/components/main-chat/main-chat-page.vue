@@ -2,7 +2,6 @@
 import {
   computed,
   inject,
-  nextTick,
   onMounted,
   ref,
   unref,
@@ -17,19 +16,19 @@ import InputFile from './components/input-file.vue';
 
 import { useUserStore } from '@/stores/user';
 import { useRoomStore } from '@/stores/room';
+import { useMessageStore } from '@/stores/message';
 
+import { chat } from '@/views/Main/ws';
+
+import { to_bottom } from "@/utils";
+
+const current_chat_id = inject('current_chat_id', ref(0));
 const user_store = useUserStore();
 const room_store = useRoomStore();
 
-import type { SendMessage, Message } from '@/types';
-import { chat } from '@/views/Main/ws';
-
-const chat_content: Ref<HTMLDivElement | null> = ref(null);
-
 // 获取聊天信息
-import { useMessageStore } from '@/stores/message';
+const chat_content: Ref<HTMLDivElement | null> = ref(null);
 const message_store = useMessageStore();
-const current_chat_id = inject('current_chat_id', ref(0));
 const message_index = computed(() =>
   message_store.friend_message.findIndex(
     (item) =>
@@ -42,46 +41,31 @@ const values = computed(() =>
     ? []
     : message_store.friend_message[message_index.value].message,
 );
-/**
- * 检查聊天容器是否位于最底部或最顶部，并在满足条件时滚动到最底部。
- *
- * 该函数主要用于聊天应用或其他需要自动滚动到底部的场景，
- * 当新消息被添加时，如果用户已经在最底部或最顶部，则自动平滑滚动到最底部。
- */
-const to_bottom = async () => {
-  if (!chat_content.value) return;
-  const container = chat_content.value;
-  const isAtBottom =
-    container.scrollHeight - container.scrollTop <= container.clientHeight + 1;
-  const isAtTop = container.scrollTop === 0;
-  if (!isAtBottom && !isAtTop) return;
-  await nextTick();
-  if (isAtBottom || isAtTop) {
-    container.scrollTo({
-      top: container.scrollHeight,
-      behavior: 'smooth',
-    });
-  }
-};
+
+const chat_content_to_bottom = async () => {
+  await to_bottom(chat_content);
+}
 
 onMounted(async () => {
-  await to_bottom();
+  await chat_content_to_bottom()
 });
 
 // 聊天信息
 const message_value = ref('');
 const current_room = computed(
-  () =>
-    room_store.rooms.find(
+  () =>{
+    return room_store.rooms.find(
       (item) => item.user_id_1 || item.user_id_2 === current_chat_id.value,
     ).id,
-);
+});
+
+// 信息发送
 const send_message = async () => {
   if (!unref(current_chat_id)) return;
   if (!message_value.value) return;
   const message: SendMessage = {
     room: current_room.value,
-    sender: user_store.profile.id!,
+    sender: user_store.profile.id,
     receiver: unref(current_chat_id),
     type: 'text',
     content: message_value.value,

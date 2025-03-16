@@ -1,9 +1,3 @@
-import {
-  type UserValue,
-  type UserCanChangeValue,
-  UserGender,
-  UserLevel,
-} from '@/types';
 /**
  * 用户基类（抽象类）
  * @abstract

@@ -1,12 +1,16 @@
 import { Socket } from "socket.io";
 
-import { friends_profile } from "@/apps/mini-chat/services/ws/index.js";
+import { friends_profile as get } from "@/apps/mini-chat/services/ws/index.js";
 
-export const get_friends_profile = async (socket: Socket, msg: any, akt: any) => {
+export const get_friends_profile = async (
+  socket: Socket,
+  msg: any,
+  akt: any
+) => {
   try {
-    const friends = await friends_profile(msg.id);
-    akt(friends); // 回调客户端
+    const friends_profile = await get(msg.id);
+    akt({ status: true, friends_profile });
   } catch (error) {
-    akt([]);
+    akt({ status: false, friends_profile: null });
   }
 };

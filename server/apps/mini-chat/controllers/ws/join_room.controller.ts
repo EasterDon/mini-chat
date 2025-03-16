@@ -11,9 +11,8 @@ export const join_room = async (
     (rooms as Array<{ id: number }>).forEach((item) => {
       socket.join(`friend-${item.id}`);
     });
-    akt(rooms); // 回调客户端
+    akt({ status: true, rooms }); // 回调客户端
   } catch (error) {
-    console.error("加入房间失败:", error);
-    akt([]);
+    akt({ status: false, rooms: null });
   }
 };

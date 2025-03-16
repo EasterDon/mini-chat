@@ -2,17 +2,17 @@ import { reactive, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { isEqual } from 'lodash-es';
 import { message } from 'ant-design-vue';
-import type { ChangeProfile, Meme, UserProfile } from '@/types';
 
 export const useUserStore = defineStore(
   'user',
   () => {
     const profile = reactive<UserProfile>({
-      id: null,
-      avatar: null,
-      username: null,
-      nickname: null,
-      level: null,
+      id: 0,
+      avatar: '',
+      username: '',
+      nickname: '',
+      level: 1,
+      online: false,
     });
 
     async function init_profile_property(user_profile: UserProfile) {

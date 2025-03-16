@@ -1,22 +1,18 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import type { UserProfile } from '@/types';
 import { message } from 'ant-design-vue';
-import { socket } from '@/views/Main/ws';
 
 export const useFriendStore = defineStore('friend', () => {
   const friend_list = ref<UserProfile[]>([]);
 
-  function init_friend_list(id: number) {
-    socket.emit('get-friends-profile', { id }, (akt: UserProfile[]) => {
-      friend_list.value = akt;
-    });
-  }
+  const init_friend_list = (friends_profile: UserProfile[]) => {
+    friend_list.value = friends_profile;
+  };
 
-  async function update_friend_list(
+  const update_friend_list = async (
     change_item: UserProfile,
     method: FriendListMethod,
-  ) {
+  ) => {
     try {
       const index = friend_list.value.findIndex(
         (item) => item.id === change_item.id,
@@ -50,7 +46,7 @@ export const useFriendStore = defineStore('friend', () => {
       message.error(`更新好友列表信息失败：${error}`);
       return false;
     }
-  }
+  };
   return { friend_list, init_friend_list, update_friend_list };
 });
 

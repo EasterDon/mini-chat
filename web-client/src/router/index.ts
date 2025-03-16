@@ -19,8 +19,6 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if (!localStorage.getItem('token') && to.name !== 'login') {
-    console.log('没有token');
-
     return { name: 'login', path: '/' };
   }
 });

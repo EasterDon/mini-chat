@@ -1,10 +1,10 @@
-export enum Gender {
+enum Gender {
   Male,
   Female,
   Secret,
 }
 
-export type UserProfile = {
+type UserProfile = {
   id: number;
   avatar: string;
   username: string;
@@ -13,7 +13,7 @@ export type UserProfile = {
   online: boolean;
 };
 
-export type ChangeProfile = {
+type ChangeProfile = {
   avatar: null | string;
   nickname: null | string;
   gender: null | Gender;
