@@ -9,8 +9,6 @@ import { createServer } from "http";
 import { use_routes, use_ws } from "./dispatch.js";
 import { error_handler } from "@/apps/mini-chat/middleware/error_handler/index.js";
 
-import listEndpoints from "express-list-endpoints";
-
 const app: Application = express();
 
 /*
@@ -35,9 +33,6 @@ app.use((_req, _res, next) => {
   err.status = 404;
   next(err);
 });
-
-console.log("当前项目所有http路由：\n");
-console.table(listEndpoints(app));
 
 app.use(error_handler);
 

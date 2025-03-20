@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  inject,
-  onMounted,
-  ref,
-  unref,
-  type Ref,
-} from 'vue';
+import { computed, inject, onMounted, ref, type Ref } from 'vue';
 
 import { Input } from 'ant-design-vue';
 import { SmileOutlined, AudioOutlined } from '@ant-design/icons-vue';
@@ -20,7 +13,7 @@ import { useMessageStore } from '@/stores/message';
 
 import { chat } from '@/views/Main/ws';
 
-import { to_bottom } from "@/utils";
+import { to_bottom } from '@/utils';
 
 const current_chat_id = inject('current_chat_id', ref(0));
 const user_store = useUserStore();
@@ -44,29 +37,31 @@ const values = computed(() =>
 
 const chat_content_to_bottom = async () => {
   await to_bottom(chat_content);
-}
+};
 
 onMounted(async () => {
-  await chat_content_to_bottom()
+  await chat_content_to_bottom();
 });
 
 // 聊天信息
 const message_value = ref('');
 const current_room = computed(
-  () =>{
-    return room_store.rooms.find(
-      (item) => item.user_id_1 || item.user_id_2 === current_chat_id.value,
-    ).id,
-});
-
+  () =>
+    room_store.rooms.find(
+      (item) =>
+        item.user_id_1 === current_chat_id.value ||
+        item.user_id_2 === current_chat_id.value,
+    )?.id,
+);
 // 信息发送
 const send_message = async () => {
-  if (!unref(current_chat_id)) return;
+  if (!current_chat_id.value) return;
+  if (!current_room.value) return;
   if (!message_value.value) return;
   const message: SendMessage = {
     room: current_room.value,
     sender: user_store.profile.id,
-    receiver: unref(current_chat_id),
+    receiver: current_chat_id.value,
     type: 'text',
     content: message_value.value,
   };
