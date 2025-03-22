@@ -21,15 +21,6 @@ export const check_sign_up_value = (
       message: ERROR_MESSAGES.INVALID_NICKNAME,
     };
   }
-  if (
-    sign_up_value.avatar &&
-    !regex.image_url_regex.test(sign_up_value.avatar)
-  ) {
-    return {
-      success: false,
-      message: ERROR_MESSAGES.INVALID_AVATAR_URL,
-    };
-  }
   return {
     success: true,
     message: "",

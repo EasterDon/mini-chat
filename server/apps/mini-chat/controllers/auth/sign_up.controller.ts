@@ -23,6 +23,8 @@ export const sign_up = async (req: Request, res: Response) => {
     const query_res = await user_sign_up(sign_up_value);
     res.status(201).json({ message: query_res.message });
   } catch (err) {
+    console.log(err);
+    
     handleError(err, res);
   }
 };

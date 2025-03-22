@@ -9,7 +9,7 @@ export const create_new_user = async (user_value: SignUpUserValue) => {
     nickname,
   } = user_value;
   const [result] = await pool.execute<ResultSetHeader>(
-    "INSERT INTO users (avatar, username, password, nickname) VALUES (?, ?, ?, ?)",
+    "INSERT INTO user (avatar, username, password, nickname) VALUES (?, ?, ?, ?)",
     [avatar, username, password, nickname]
   );
   return result;

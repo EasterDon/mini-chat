@@ -1,4 +1,4 @@
-export const username_regex = /^[a-zA-Z0-9_-]{1,20}$/;
+export const username_regex = /^[a-zA-Z0-9_-]{8,20}$/;
 
 export const password_regex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
