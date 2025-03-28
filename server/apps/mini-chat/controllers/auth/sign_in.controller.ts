@@ -1,7 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { user_sign_in } from "@/apps/mini-chat/services/auth/index.js";
 
-export const sign_in = async (req: Request, res: Response) => {
+export const sign_in = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username, password } = req.body;
 
@@ -18,8 +22,6 @@ export const sign_in = async (req: Request, res: Response) => {
       token: result.token,
     });
   } catch (err) {
-    res.status(500).json({
-      message: "服务器错误",
-    });
+    next(err);
   }
 };

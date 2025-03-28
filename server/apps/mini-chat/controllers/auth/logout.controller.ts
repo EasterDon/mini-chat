@@ -1,7 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { user_logout } from "@/apps/mini-chat/services/auth/index.js";
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id, username } = req.body;
 
@@ -11,6 +15,6 @@ export const logout = async (req: Request, res: Response) => {
     // 返回响应
     res.status(result.status).json({ message: result.message });
   } catch (err) {
-    res.status(500).json({ message: "登出失败，请联系开发者" });
+    next(err);
   }
 };
