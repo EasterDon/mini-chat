@@ -1,4 +1,4 @@
-import { pool } from "@/apps/mini-chat/models/db/index.js";
+import { pool } from "@/src/models/db/index.js";
 import { ResultSetHeader } from "mysql2";
 
 export const update_user_online_status = async (

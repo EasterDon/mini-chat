@@ -6,8 +6,12 @@ import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { createServer } from "http";
 
-import { use_routes, use_ws } from "./dispatch.js";
-import { error_handler } from "@/apps/mini-chat/middleware/error_handler/index.js";
+import { expressjwt } from "express-jwt";
+
+// @ts-ignore
+import { router } from "src/index.js";
+import { error_handler } from "@/src/middleware/error_handler/index.js";
+import { use_ws_mini_chat } from "./src/ws/index.js";
 
 const app: Application = express();
 
@@ -25,7 +29,13 @@ app.use(cors());
 
 app.use(express.static(path.join(current_dirname, "public")));
 
-use_routes(app);
+app.use(
+  expressjwt({ secret: process.env.secret_jwt, algorithms: "HS256" }).unless({
+    path: ["/mini-chat/sign-in", "/mini-chat/sign-up"],
+  })
+);
+
+app.use("/mini-chat", router);
 
 app.use((_req, _res, next) => {
   const err = new Error("Not Found");
@@ -37,6 +47,6 @@ app.use(error_handler);
 // http服务器
 const server = createServer(app);
 // ws服务器
-use_ws(server);
+use_ws_mini_chat(server);
 
 export { app, server };

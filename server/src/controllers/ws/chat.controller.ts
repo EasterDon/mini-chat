@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { receive_message } from "@/apps/mini-chat/services/ws/index.js";
+import { receive_message } from "@/src/services/ws/index.js";
 
 export const chat = async (socket: Socket, msg: any, akt: any) => {
   try {

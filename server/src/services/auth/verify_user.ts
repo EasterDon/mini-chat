@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { RowDataPacket } from "mysql2/typings/mysql/index.js";
 import jwt from "jsonwebtoken";
-import { pool } from "@/apps/mini-chat/models/db/index.js";
+import { pool } from "@/src/models/db/index.js";
 import { no_need_jwt } from "@/apps/mini-chat/middleware/no_need_middleware.js";
 
 export const verify_user_sign_in_value = async (

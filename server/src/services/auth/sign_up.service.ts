@@ -1,4 +1,4 @@
-import model from "@/apps/mini-chat/models/auth/index.js";
+import model from "@/src/models/auth/index.js";
 import { check_sign_up_value } from "@/utils/check/index.js";
 
 export const user_sign_up = async (user_value: SignUpUserValue) => {

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { user_sign_up } from "@/apps/mini-chat/services/auth/sign_up.service.js";
+import { user_sign_up } from "@/src/services/auth/sign_up.service.js";
 
 /**
  * 接受用户注册数据

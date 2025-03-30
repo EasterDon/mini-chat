@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-import { friends_profile as get } from "@/apps/mini-chat/services/ws/index.js";
+import { friends_profile as get } from "@/src/services/ws/index.js";
 
 export const get_friends_profile = async (
   socket: Socket,

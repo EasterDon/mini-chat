@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2";
 
-import { pool } from "@/apps/mini-chat/models/db/index.js";
+import { pool } from "@/src/models/db/index.js";
 
 export const get_user_by_username = async (username: string) => {
   const [query_res] = await pool.query<RowDataPacket[]>(

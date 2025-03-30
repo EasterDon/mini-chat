@@ -1,4 +1,4 @@
-import { pool } from "@/apps/mini-chat/models/db/index.js";
+import { pool } from "@/src/models/db/index.js";
 
 export const get_friends_profile = async (user_id: number) => {
   const [friends] = await pool.query(

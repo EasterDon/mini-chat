@@ -1,4 +1,4 @@
-import { pool } from "@/apps/mini-chat/models/db/index.js";
+import { pool } from "@/src/models/db/index.js";
 
 export const get_user_rooms = async (user_id: number) => {
   const [rooms] = await pool.query(

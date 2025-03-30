@@ -1,4 +1,4 @@
-import model from "@/apps/mini-chat/models/auth/index.js";
+import model from "@/src/models/auth/index.js";
 
 export const user_logout = async (id: number, username: string) => {
   try {

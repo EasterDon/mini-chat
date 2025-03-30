@@ -1,5 +1,5 @@
 import { check_sign_in_value } from "@/utils/check/index.js";
-import model from "@/apps/mini-chat/models/auth/index.js";
+import model from "@/src/models/auth/index.js";
 import { create_jwt } from "@/utils/jwt/index.js";
 
 /**

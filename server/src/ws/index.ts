@@ -1,9 +1,9 @@
 import { Http2Server } from "http2";
 import { Server } from "socket.io";
 
-import * as controller from "@/apps/mini-chat/controllers/ws/index.js";
+import * as controller from "@/src/controllers/ws/index.js";
 
-export const use_ws_mini_chat = (server: Http2Server) => {
+export const use_ws_mini_chat = (server: any) => {
   const io = new Server(server, {
     cors: {
       origin: "*", // 允许所有域名访问

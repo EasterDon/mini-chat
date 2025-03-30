@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { user_sign_in } from "@/apps/mini-chat/services/auth/index.js";
+import { user_sign_in } from "@/src/services/auth/index.js";
 
 export const sign_in = async (
   req: Request,

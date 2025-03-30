@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { user_logout } from "@/apps/mini-chat/services/auth/index.js";
+import { user_logout } from "@/src/services/auth/index.js";
 
 export const logout = async (
   req: Request,
