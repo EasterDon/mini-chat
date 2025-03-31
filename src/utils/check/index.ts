@@ -1,36 +1,19 @@
 import * as regex from "@/utils/regex/index.js";
-import { ERROR_MESSAGES } from "./error_message.js";
-export const check_sign_up_value = (
-  sign_up_value: SignUpUserValue
-): ValidationResult => {
+export const check_sign_up_value = (sign_up_value: SignUpUserValue) => {
+  let message = null;
   if (!regex.username_regex.test(sign_up_value.username)) {
-    return {
-      success: false,
-      message: ERROR_MESSAGES.INVALID_USERNAME,
-    };
+    message = "用户名格式错误";
   }
   if (!regex.password_regex.test(sign_up_value.password)) {
-    return {
-      success: false,
-      message: ERROR_MESSAGES.INVALID_PASSWORD,
-    };
+    message = "密码格式错误";
   }
   if (!regex.nickname_regex.test(sign_up_value.nickname)) {
-    return {
-      success: false,
-      message: ERROR_MESSAGES.INVALID_NICKNAME,
-    };
+    message = "用户昵称格式错误";
   }
-  return {
-    success: true,
-    message: "",
-  };
+  if (message) throw new Error(message);
 };
 
-export const check_sign_in_value = async (
-  username: string,
-  password: string
-) => {
+export const check_sign_in_value = (username: string, password: string) => {
   let message = null;
 
   // 检查用户名
@@ -51,11 +34,8 @@ export const check_sign_in_value = async (
     message = "密码必须包含字母、数字和特殊字符且长度不少于8";
   }
 
-  // 如果存在任何错误，返回失败的结果
+  // 如果存在任何错误，抛出错误
   if (message !== null) {
-    return { success: false, message };
+    throw new Error(message);
   }
-
-  // 返回成功的验证结果
-  return { success: true, message };
 };

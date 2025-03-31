@@ -1,6 +1,10 @@
 import mysql from "mysql2/promise";
 
 let password = process.env.database_pass;
+if (!password) {
+  console.log("请确保.env文件中含有 database_pass 字段");
+  process.exit(1);
+}
 
 const config = {
   host: "localhost",

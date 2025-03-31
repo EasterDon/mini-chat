@@ -2,7 +2,6 @@
 // 让系统动态的去查找node 来执行脚本文件
 import { server, app } from "../app.js";
 import debugPkg from "debug";
-import http from "http";
 
 import { ErrorRequestHandler } from "express";
 
@@ -69,7 +68,6 @@ const onError: ErrorRequestHandler = (error) => {
 /**
  * 在所有网络接口上监听提供的端口。
  */
-// server.listen(port, () => console.log("服务器已启动"));
-server.listen(3000, () => console.log(`服务器已启动`));
+server.listen(port, () => console.log("服务器已启动"));
 server.on("error", onError);
 server.on("listening", onListening);

@@ -1,10 +1,10 @@
 import { Socket } from "socket.io";
-import { get_user_rooms } from "@/src/services/ws/index.js";
+import { get_user_rooms } from "@/services/ws/index.js";
 
 export const join_room = async (
   socket: Socket,
   msg: { id: number },
-  akt: any
+  akt: any,
 ) => {
   try {
     const rooms = await get_user_rooms(msg.id);

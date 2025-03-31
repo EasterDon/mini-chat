@@ -1,2 +1,5 @@
 ignoredBuiltDependencies:
   - bufferutil
+onlyBuiltDependencies:
+  - '@swc/core'
+  - utf-8-validate

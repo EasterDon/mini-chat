@@ -1,23 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import { user_sign_in } from "@/src/services/auth/index.js";
+import service from "@/services/auth/index.js";
 
-export const sign_in = async (
+export const sign_in_user = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { username, password } = req.body;
-
-    // 调用 Service 层处理登录逻辑
-    const result = await user_sign_in(username, password);
-    if (!result.profile) {
-      res.status(result.status).json({ message: result.message });
-      return;
-    }
-    // 返回响应
-    res.status(result.status).json({
-      message: result.message,
+    const result = await service.sign_in.sign_in_user(username, password);
+    res.status(200).json({
       profile: result.profile,
       token: result.token,
     });

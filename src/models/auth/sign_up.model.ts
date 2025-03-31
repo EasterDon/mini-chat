@@ -1,4 +1,4 @@
-import { pool } from "@/src/models/db/index.js";
+import { pool } from "@/models/db/index.js";
 import { ResultSetHeader } from "mysql2";
 
 export const create_new_user = async (user_value: SignUpUserValue) => {
@@ -10,7 +10,9 @@ export const create_new_user = async (user_value: SignUpUserValue) => {
   } = user_value;
   const [result] = await pool.execute<ResultSetHeader>(
     "INSERT INTO user (avatar, username, password, nickname) VALUES (?, ?, ?, ?)",
-    [avatar, username, password, nickname]
+    [avatar, username, password, nickname],
   );
-  return result;
+  if (result.affectedRows !== 1) {
+    throw new Error("用户注册失败：数据库未写入数据");
+  }
 };

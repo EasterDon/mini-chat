@@ -9,8 +9,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "./", // 基础目录，用于解析非相对模块名称
     "paths": {
-      "*": ["node_modules/*"],
-      "@/*": ["./*"] // 定义 @ 别名
+      "@/*": ["src/*"] // 定义 @ 别名
     },
     "outDir": "./dist",
     "rootDir": "./"

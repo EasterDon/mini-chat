@@ -8,10 +8,9 @@ import { createServer } from "http";
 
 import { expressjwt } from "express-jwt";
 
-// @ts-ignore
-import { router } from "src/index.js";
-import { error_handler } from "@/src/middleware/error_handler/index.js";
-import { use_ws_mini_chat } from "./src/ws/index.js";
+import { router } from "@/index.js";
+import { error_handler } from "@/middleware/error_handler/index.js";
+import { use_ws_mini_chat } from "@/ws/index.js";
 
 const app: Application = express();
 
@@ -22,6 +21,12 @@ const app: Application = express();
 */
 const current_dirname = dirname(fileURLToPath(import.meta.url));
 
+const jwt_secret = process.env.jwt_secret;
+if (!jwt_secret) {
+  console.error("请确保.env文件中含有 jwt_secret 字段");
+  process.exit(1);
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
@@ -30,18 +35,20 @@ app.use(cors());
 app.use(express.static(path.join(current_dirname, "public")));
 
 app.use(
-  expressjwt({ secret: process.env.secret_jwt, algorithms: "HS256" }).unless({
+  expressjwt({ secret: jwt_secret, algorithms: ["HS256"] }).unless({
     path: ["/mini-chat/sign-in", "/mini-chat/sign-up"],
-  })
+  }),
 );
 
 app.use("/mini-chat", router);
 
 app.use((_req, _res, next) => {
   const err = new Error("Not Found");
+  console.log(err);
   next(err);
 });
 
+// 错误处理程序
 app.use(error_handler);
 
 // http服务器
