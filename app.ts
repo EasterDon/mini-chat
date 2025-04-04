@@ -36,7 +36,7 @@ app.use(express.static(path.join(current_dirname, "public")));
 
 app.use(
   expressjwt({ secret: jwt_secret, algorithms: ["HS256"] }).unless({
-    path: ["/mini-chat/sign-in", "/mini-chat/sign-up"],
+    path: ["/mini-chat/auth/sign-in", "/mini-chat/auth/sign-up"],
   }),
 );
 

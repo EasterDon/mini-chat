@@ -8,12 +8,14 @@ export const sign_in_user = async (
 ) => {
   try {
     const { username, password } = req.body;
+    console.log(username,password)
     const result = await service.sign_in.sign_in_user(username, password);
     res.status(200).json({
       profile: result.profile,
       token: result.token,
     });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
