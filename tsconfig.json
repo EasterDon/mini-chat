@@ -2,16 +2,19 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-
     "strict": true,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "noEmitOnError": true,
     "baseUrl": "./", // 基础目录，用于解析非相对模块名称
+    "outDir": "./src",
+    "rootDir": "./src-dev",
     "paths": {
-      "@/*": ["src/*"] // 定义 @ 别名
-    },
-    "outDir": "./dist",
-    "rootDir": "./"
-  }
+      "#*": ["./src-dev/*"] // 定义 @ 别名
+    }
+  },
+  "include": ["src-dev"],
+  "exclude": ["node_modules", "src", "public"]
 }
