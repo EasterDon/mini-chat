@@ -55,11 +55,9 @@ const onError: ErrorRequestHandler = (error) => {
     case "EACCES":
       console.error(bind + " 需要提升权限");
       process.exit(1);
-      break;
     case "EADDRINUSE":
       console.error(bind + " 已被占用");
       process.exit(1);
-      break;
     default:
       throw error;
   }

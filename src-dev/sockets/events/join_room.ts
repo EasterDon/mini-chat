@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { get_user_rooms } from "#services/ws/index.js";
+import { get_user_rooms } from "#services/sockets/index.js";
 
 export const join_room = async (
   socket: Socket,
