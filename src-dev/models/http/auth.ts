@@ -1,34 +1,48 @@
-import { pool } from "./db.js";
+import { pool } from "#models/db.js";
 import { ResultSetHeader, type RowDataPacket } from "mysql2";
+import { hash } from "bcryptjs";
 
+const sign_up_check = `SELECT username FROM user WHERE username = ?`;
+
+/**
+ * 创建新用户
+ * @param user_value 用户信息
+ */
 export const create_new_user = async (user_value: SignUpUserValue) => {
   const {
-    avatar = "http://127.0.0.1:3001/images/avatar/index.png",
+    avatar = "/images/avatar/index.png",
     username,
     password,
     nickname,
   } = user_value;
+
+  // 查询用户名是否被注册
+  const [check_result] = await pool.query<RowDataPacket[]>(sign_up_check, [
+    username,
+  ]);
+  if (check_result.length > 0) throw new Error("该用户名已被注册");
+
+  // 加盐操作
+  const saltRounds = 12;
+  const hashedPassword = await hash(password, saltRounds);
   const [result] = await pool.execute<ResultSetHeader>(
-    "INSERT INTO user (avatar, username, password, nickname) VALUES (?, ?, ?, ?)",
-    [avatar, username, password, nickname],
+    "INSERT INTO user (avatar, username, password,nickname) VALUES (?, ?, ?, ?)",
+    [avatar, username, hashedPassword, nickname],
   );
-  if (result.affectedRows !== 1) {
+  if (result.affectedRows !== 1)
     throw new Error("用户注册失败：数据库未写入数据");
-  }
 };
 
-export const get_user_by_username = async (username: string) => {
+// 查询用户
+export const get_profile_by_username = async (username: string) => {
   const [query_res] = await pool.query<RowDataPacket[]>(
-    `select * from user where username=?`,
+    "select * from user where username=?",
     [username],
   );
 
-  const profile = query_res[0];
-  if (!profile) {
-    throw new Error("没有该用户，请先注册");
-  }
+  if (query_res.length === 0) throw new Error("没有该用户，请先注册");
 
-  return profile;
+  return query_res[0];
 };
 
 export const update_user_online_status = async (

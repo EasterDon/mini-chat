@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import * as model from "#models/auth.js";
-import { check_sign_up_value, check_sign_in_value } from "#utils/check.js";
+import { compare } from "bcryptjs";
+import * as model from "#models/http/auth.js";
+import { check_sign_up_value } from "#utils/check.js";
 import { create_token } from "#utils/jwt.js";
 
 /**
@@ -14,6 +15,7 @@ export const sign_up = async (
   try {
     const sign_up_value: SignUpUserValue = req.body;
     check_sign_up_value(sign_up_value);
+
     await model.create_new_user(sign_up_value);
     res.status(201);
   } catch (err) {
@@ -31,16 +33,13 @@ export const sign_in = async (
 ) => {
   try {
     const { username, password } = req.body;
-    // 验证用户名密码是否符合格式
-    check_sign_in_value(username, password);
 
     // 查询数据库是否存在该用户
-    const profile = await model.get_user_by_username(username);
+    const profile = await model.get_profile_by_username(username);
 
     // 密码验证
-    if (profile.password !== password) {
-      throw new Error("密码错误，请重试");
-    }
+    const match_pass = await compare(password, profile.password);
+    if (!match_pass) throw new Error("密码错误，请重试");
 
     // 将用户在线状态改为在线
     await model.update_user_online_status(true, profile.id);

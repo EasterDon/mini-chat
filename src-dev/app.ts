@@ -5,11 +5,10 @@ import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { createServer } from "http";
 
-import { expressjwt } from "express-jwt";
-
 import { router } from "#routes/index.js";
 import { error_handler } from "#utils/error_handler.js";
 import { use_ws_mini_chat } from "#sockets/index.js";
+import { check_token } from "#utils/jwt.js";
 
 const app: Application = express();
 
@@ -32,17 +31,12 @@ app.use(morgan("dev"));
 
 app.use(express.static(path.join(current_dirname, "public")));
 
-app.use(
-  expressjwt({ secret: jwt_secret, algorithms: ["HS256"] }).unless({
-    path: ["/mini-chat/auth/sign-in", "/mini-chat/auth/sign-up"],
-  }),
-);
+app.use(check_token);
 
 app.use("/mini-chat", router);
 
 app.use((_req, _res, next) => {
   const err = new Error("Not Found");
-  console.log(err);
   next(err);
 });
 
